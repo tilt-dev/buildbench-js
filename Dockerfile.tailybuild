@@ -1,0 +1,7 @@
+FROM node:10
+
+WORKDIR /app
+ADD . .
+RUN npm install .
+
+ENTRYPOINT tail -f /dev/null
