@@ -1,0 +1,23 @@
+# Start builder
+ARG baseImage="node:10"
+FROM ${baseImage} as builder
+
+WORKDIR /app
+ADD . .
+
+# For some reason, npm with buildkit fails the first time, but
+# works the second time. :shrug:
+# https://stackoverflow.com/questions/15393821/npm-err-cb-never-called
+RUN npm install . || npm install .
+
+# Done builder
+
+# Start dir-cache
+FROM node:10 as dir-cache
+COPY --from=builder /app/node_modules /app/node_modules
+# Done dir-cache
+
+# Start main
+FROM builder
+ENTRYPOINT exit 0
+# Done main

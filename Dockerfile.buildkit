@@ -1,0 +1,11 @@
+FROM node:10
+
+WORKDIR /app
+ADD . .
+
+# For some reason, npm with buildkit fails the first time, but
+# works the second time. :shrug:
+# https://stackoverflow.com/questions/15393821/npm-err-cb-never-called
+RUN npm install . || npm install .
+
+ENTRYPOINT exit 0
