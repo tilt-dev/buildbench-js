@@ -1,0 +1,25 @@
+# Start builder
+ARG copyImage="node:10"
+FROM ${copyImage} as copier
+RUN mkdir -p /app/node_modules
+RUN touch /app/yarn.lock
+
+FROM node:10 as builder
+
+WORKDIR /app
+COPY --from=copier /app/node_modules /app/node_modules
+COPY --from=copier /app/yarn.lock /app/yarn.lock
+ADD . .
+RUN yarn install
+# Done builder
+
+# Start dir-cache
+FROM node:10 as dir-cache
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/yarn.lock /app/yarn.lock
+# Done dir-cache
+
+# Start main
+FROM builder
+ENTRYPOINT exit 0
+# Done main
