@@ -4,10 +4,6 @@ FROM node:10
 
 WORKDIR /app
 ADD . .
-
-# For some reason, npm with buildkit fails the first time, but
-# works the second time. :shrug:
-# https://stackoverflow.com/questions/15393821/npm-err-cb-never-called
-RUN --mount=type=cache,target=/root/.npm npm install . || npm install .
+RUN --mount=type=cache,target=/root/.cache yarn install
 
 ENTRYPOINT exit 0

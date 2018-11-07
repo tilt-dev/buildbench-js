@@ -2,6 +2,6 @@ FROM node:10
 
 WORKDIR /app
 ADD . .
-RUN npm install .
+RUN yarn install
 
 ENTRYPOINT exit 0
