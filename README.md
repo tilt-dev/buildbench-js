@@ -34,14 +34,15 @@ we don't change the dependencies).
 When the builds finish, you should get results that look like this:
 
 ```
-Make naive: 80.815424s
-Make buildkit: 62.434007s
-Make cachemount: 69.091764s
-Make cachedir: 8.885972s
-Make cachedircopy: 9.508763s
-Make cachedirbuildkit: 3.951881s
-Make tailybuild: 1.607163s
-Make naked: 1.598011s
+Make naive: 66.698035s
+Make buildkit: 49.008923s
+Make cachemount: 51.606757s
+Make cachedir: 8.262599s
+Make cachedirbuildkit: 3.940743s
+Make cachedircopy: 8.391028s
+Make cachedircopybuildkit: 3.783343s
+Make tailybuild: 2.030925s
+Make naked: 2.673993s
 ```
 
 Numbers may vary based on hardware, operating system, and Docker version.

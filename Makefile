@@ -42,6 +42,20 @@ cachedir: cachedir-base
                -f Dockerfile.cachedir .
 	docker run --rm -it windmill.build/buildbench-js/cachedir
 
+cachedirbuildkit-base:
+	if [ "$(shell docker images windmill.build/buildbench-js/cachedirbuildkit-base -q)" = "" ]; then \
+		DOCKER_BUILDKIT=1 docker build --build-arg baseImage=node:10 \
+        -t windmill.build/buildbench-js/cachedirbuildkit-base -f Dockerfile.cachedirbuildkit --target=dir-cache .; \
+	fi;
+
+cachedirbuildkit: cachedirbuildkit-base
+	$(call inject-nonce)
+	DOCKER_BUILDKIT=1 docker build --build-arg baseImage=windmill.build/buildbench-js/cachedirbuildkit-base \
+               -t windmill.build/buildbench-js/cachedirbuildkit \
+               -f Dockerfile.cachedirbuildkit .
+	docker run --rm -it windmill.build/buildbench-js/cachedirbuildkit
+
+
 cachedircopy-base:
 	if [ "$(shell docker images windmill.build/buildbench-js/cachedircopy-base -q)" = "" ]; then \
 		docker build -t windmill.build/buildbench-js/cachedircopy-base -f Dockerfile.cachedircopy --target=dir-cache .; \
@@ -54,17 +68,19 @@ cachedircopy: cachedircopy-base
                -f Dockerfile.cachedircopy .
 	docker run --rm -it windmill.build/buildbench-js/cachedircopy
 
-cachedirbuildkit-base:
-	if [ "$(shell docker images windmill.build/buildbench-js/cachedirbuildkit-base -q)" = "" ]; then \
-		docker build -t windmill.build/buildbench-js/cachedirbuildkit-base -f Dockerfile.cachedirbuildkit --target=dir-cache .; \
+cachedircopybuildkit-base:
+	if [ "$(shell docker images windmill.build/buildbench-js/cachedircopybuildkit-base -q)" = "" ]; then \
+		DOCKER_BUILDKIT=1 docker build --build-arg copyImage=node:10 \
+        -t windmill.build/buildbench-js/cachedircopybuildkit-base \
+        -f Dockerfile.cachedircopybuildkit --target=dir-cache .; \
 	fi;
 
-cachedirbuildkit: cachedirbuildkit-base
+cachedircopybuildkit: cachedircopybuildkit-base
 	$(call inject-nonce)
-	DOCKER_BUILDKIT=1 docker build --build-arg baseImage=windmill.build/buildbench-js/cachedirbuildkit-base \
-               -t windmill.build/buildbench-js/cachedirbuildkit \
-               -f Dockerfile.cachedirbuildkit .
-	docker run --rm -it windmill.build/buildbench-js/cachedirbuildkit
+	DOCKER_BUILDKIT=1 docker build --build-arg copyImage=windmill.build/buildbench-js/cachedircopybuildkit-base \
+               -t windmill.build/buildbench-js/cachedircopybuildkit \
+               -f Dockerfile.cachedircopybuildkit .
+	docker run --rm -it windmill.build/buildbench-js/cachedircopybuildkit
 
 tailybuild-base:
 	if [ "$(shell docker ps --filter=name=tailybuild -q)" = "" ]; then \
@@ -85,4 +101,5 @@ clean:
 	docker rmi -f windmill.build/buildbench-js/tailybuild-base || exit 0
 	docker rmi -f windmill.build/buildbench-js/cachedir-base || exit 0
 	docker rmi -f windmill.build/buildbench-js/cachedircopy-base || exit 0
+	docker rmi -f windmill.build/buildbench-js/cachedircopybuildkit-base || exit 0
 	docker rmi -f windmill.build/buildbench-js/cachedirbuildkit-base || exit 0
