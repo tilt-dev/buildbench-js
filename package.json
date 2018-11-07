@@ -1,6 +1,6 @@
 {
-    "name": "@windmilleng/buildbench-js",
-    "nonce": "Tue Nov  6 14:46:19 EST 2018",
+    "name": "buildbench-js",
+    "nonce": "Wed Nov  7 01:22:41 EST 2018",
     "version": "0.0.1",
     "description": "Shared component that contains the Ship Init app",
     "author": "Windmill Engineering",

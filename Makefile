@@ -13,7 +13,7 @@ profile:
 
 naked:
 	$(call inject-nonce)
-	npm install .
+	yarn install
 
 naive:
 	$(call inject-nonce)
@@ -75,10 +75,14 @@ tailybuild-base:
 tailybuild: tailybuild-base
 	$(call inject-nonce)
 	docker cp package.json tailybuild:/app/package.json
-	docker exec -it tailybuild npm install .
+	docker exec -it tailybuild yarn install
 
 clean:
 	$(call reset-nonce)
 	rm -fR node_modules
 	docker kill tailybuild && docker rm tailybuild || exit 0
 	docker rmi -f $(shell docker image ls --filter=reference=windmill.build/buildbench-js/* -q) || exit 0
+	docker rmi -f windmill.build/buildbench-js/tailybuild-base || exit 0
+	docker rmi -f windmill.build/buildbench-js/cachedir-base || exit 0
+	docker rmi -f windmill.build/buildbench-js/cachedircopy-base || exit 0
+	docker rmi -f windmill.build/buildbench-js/cachedirbuildkit-base || exit 0
